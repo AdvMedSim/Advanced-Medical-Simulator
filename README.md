@@ -1,2 +1,2 @@
 # Advanced-Medical-Simulator
-An advanced medical simulator created in the Unity Engine.
+The source code of an advanced medical simulator created in the Unity Engine.
