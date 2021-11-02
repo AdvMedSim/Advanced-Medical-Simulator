@@ -5,12 +5,23 @@ using Game.Static;
 
 namespace Game.Modules.Creatures.Humans
 {
+    [RequireComponent(typeof(CharacterController))]
     /// <summary>
     /// The Player class handles movement, interaction and functional game logic.
     /// </summary>
     public class Player : Human
     {
         #region Fields
+
+        /// <summary>
+        /// The current canera rotation.
+        /// </summary>
+        private Vector2 cameraRotation = Vector2.zero;
+
+        /// <summary>
+        /// The interpolated canera rotation.
+        /// </summary>
+        private Vector2 smoothCameraRotation = Vector2.zero;
 
         /// <summary>
         /// The desired input direction.
@@ -65,6 +76,7 @@ namespace Game.Modules.Creatures.Humans
         {
             UpdateMovement();
             UpdateInteraction();
+            UpdateCameraRotation();
         }
 
         /// <summary>
@@ -79,7 +91,7 @@ namespace Game.Modules.Creatures.Humans
             moveDirection = Vector3.Lerp(moveDirection, inputDirection * Data.GetPlayerSpeed, Data.GetPlayerMovementInterpolationSpeed);
 
             // Apply the movement to the Character Controller.
-            characterController.SimpleMove(moveDirection);
+            characterController.SimpleMove(transform.TransformDirection(moveDirection));
         }
 
         /// <summary>
@@ -100,6 +112,31 @@ namespace Game.Modules.Creatures.Humans
                     // Handle specific interaction logic.
                 }
             }
+        }
+
+        /// <summary>
+        /// Call to update the rotation of the Player and the Camera.
+        /// </summary>
+        private void UpdateCameraRotation()
+        {
+            // Set both camera rotation values.
+            cameraRotation.y += Input.GetAxisRaw("Mouse X") * Data.getPlayerCameraSensitivity;
+            cameraRotation.x += -Input.GetAxisRaw("Mouse Y") * Data.getPlayerCameraSensitivity;
+
+            // Then make sure that the up/down rotation stays within realistic limits.
+            cameraRotation.x = Mathf.Clamp(cameraRotation.x, -90.0f, 90.0f);
+
+            // Then also make sure to not get a floating point error, so wrap the value.
+            cameraRotation.y = Solver.Wrap(cameraRotation.y, -360, 360);
+
+            // Then interpolate the smooth camera rotation.
+            smoothCameraRotation = Vector2.Lerp(smoothCameraRotation, cameraRotation, Solver.GetDeltaValue(Data.getPlayerCameraInterpolation));
+
+            // Then set the camera's rotation.
+            mainCamera.transform.localRotation = Quaternion.Euler(new Vector3(smoothCameraRotation.x, 0, 0));
+
+            // Then set the rotation of the player.
+            transform.rotation = Quaternion.Euler(new Vector3(0, smoothCameraRotation.y, 0));
         }
     }
 }
