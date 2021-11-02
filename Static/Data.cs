@@ -46,11 +46,27 @@ namespace Game.Static
         }
 
         /// <summary>
+        /// Returns the sensitivity of the Camera.
+        /// </summary>
+        public static float getPlayerCameraSensitivity
+        {
+            get { return 3.0f; }
+        }
+
+        /// <summary>
+        /// Returns the interpolation speed of the Camera.
+        /// </summary>
+        public static float getPlayerCameraInterpolation
+        {
+            get { return 20.0f; }
+        }
+
+        /// <summary>
         /// Returns the center point offset for the Player's Character Controller.
         /// </summary>
         public static Vector3 getPlayerCharacterControllerCenter
         {
-            get { return new Vector3(0, 1.0f, 0); }
+            get { return new Vector3(0, 0.0f, 0); }
         }
 
         #endregion
