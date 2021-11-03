@@ -50,7 +50,7 @@ namespace Game.Static
         /// </summary>
         public static float getPlayerCameraSensitivity
         {
-            get { return 3.0f; }
+            get { return 0.75f; }
         }
 
         /// <summary>
